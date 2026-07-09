@@ -231,4 +231,38 @@ public function history()
 
     return view('v_history', $data);
 }
+
+public function proses_checkout()
+{
+    helper('promo_helper'); 
+
+    $username = session()->get('username'); 
+    $total_harga = $this->cart->total() ?? 0; 
+    $voucher_code = $this->request->getPost('kode_voucher') ?? ''; 
+
+    $biaya_jasa     = hitung_biaya_jasa($total_harga);
+    $diskon_voucher = hitung_diskon_voucher($total_harga, $voucher_code);
+    $free_mouse     = hitung_free_mouse($total_harga);
+
+    $subtotal = ($total_harga + $biaya_jasa) - $diskon_voucher - $free_mouse;
+    $ongkir = (int)($this->request->getPost('ongkir') ?? 0);
+    $grand_total = $subtotal + $ongkir;
+
+    $data_order = [
+        'username'       => $username, 
+        'total_harga'    => $total_harga,
+        'voucher_code'   => $voucher_code,
+        'biaya_jasa'     => $biaya_jasa,
+        'diskon_voucher' => $diskon_voucher,
+        'free_mouse'     => $free_mouse,
+        'ongkir'         => $ongkir,
+        'diskon'         => 0, 
+        'status'         => 0,
+    ];
+
+    $this->transactionModel->save($data_order);
+    
+    $this->cart->destroy();
+    return redirect()->to(base_url('history'))->with('success', 'Transaksi Berhasil!');
+}
 }

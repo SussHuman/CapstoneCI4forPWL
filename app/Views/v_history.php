@@ -80,7 +80,11 @@ History Transaksi Pembelian <strong><?= $username ?></strong>
                                 <hr>
                             <?php endforeach; ?>
                         <?php endif; ?>
-                        Ongkir <?= number_to_currency($item['ongkir'], 'IDR') ?>
+                        Ongkir <?= number_to_currency($item['ongkir'] ?? 0, 'IDR') ?>
+                        Biaya Jasa: <?= number_to_currency($item['biaya_jasa'] ?? 0, 'IDR') ?><br>
+                        Diskon Voucher: <?= number_to_currency($item['diskon_voucher'] ?? 0, 'IDR') ?><br>
+                        Free Mouse: <?= number_to_currency($item['free_mouse'] ?? 0, 'IDR') ?><br>
+                        <strong>Total Bayar: <?= number_to_currency($item['total_harga'], 'IDR') ?></strong>
                     </div>
                 </div>
             </div>
